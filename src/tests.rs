@@ -9,25 +9,30 @@ macro_rules! test_size {
 
 macro_rules! test_nonany {
     (i8, $niche:expr) => {
-        test_nonany!(NonAnyI8, i8, $niche);
+        test_nonany!(NonAnyI8, i8, $niche, true);
     };
 
     (u8, $niche:expr) => {
-        test_nonany!(NonAnyU8, u8, $niche);
+        test_nonany!(NonAnyU8, u8, $niche, false);
     };
 
-    ($nonany:ident, $int:ident, $niche:expr) => {
-        const _:() = {
+    ($nonany:ident, $int:ident, $niche:expr, $signed:ident) => {
+        const _: () = {
             const NICHE: $int = $niche;
             type NonAny = crate::$nonany::<{ NICHE }>;
             test_size!(NonAny, $int);
 
             let mut i = $int::MIN;
+            let mut first = true;
             loop {
-                if i == $int::MAX {
-                    break;
+                if first {
+                    first = false;
+                } else {
+                    if i == $int::MAX {
+                        break;
+                    }
+                    i += 1;
                 }
-                i += 1;
 
                 let non = NonAny::new(i);
 
@@ -42,10 +47,46 @@ macro_rules! test_nonany {
                 assert!(non.get() == i);
                 assert!(non.0.get() == i ^ NICHE);
                 
-                assert!(unsafe { NonAny::new_unchecked(i).get() } == non.get())
+                assert!(unsafe { NonAny::new_unchecked(i).get() } == non.get());
+
+                test_nonany!(@signed, $signed, $int, NICHE, non, i);
             };
         };
     };
+
+    (@signed, true, $int:ident, $niche:ident, $non:ident, $i:ident) => {
+        assert!($non.is_positive() == $i.is_positive());
+        assert!($non.is_negative() == $i.is_negative());
+
+        if $i == $int::MIN {
+             match $non.checked_abs() {
+                Ok(_) => panic!(),
+                Err(err) => match err {
+                    crate::CheckedError::Overflow => (),
+                    crate::CheckedError::Niche => panic!()
+                }
+            };
+        } else if $i < 0 && $i.abs() == $niche {
+            match $non.checked_abs() {
+                Ok(_) => panic!(),
+                Err(err) => match err {
+                    crate::CheckedError::Overflow => panic!(),
+                    crate::CheckedError::Niche => ()
+                }
+            };
+        } else {
+            let abs = match $non.checked_abs() {
+                Ok(abs) => abs,
+                Err(err) => match err {
+                    crate::CheckedError::Overflow => panic!(),
+                    crate::CheckedError::Niche => panic!()
+                }
+            };
+            assert!(abs.get() == $i.abs())
+        };
+    };
+
+    (@signed, false, $non:ident, $int:ident, $i:ident, $niche:ident) => {};
 }
 
 test_size!(crate::NonZeroI8, i8);
@@ -346,7 +387,6 @@ test_nonany!(i8, 124i8);
 test_nonany!(i8, 125i8);
 test_nonany!(i8, 126i8);
 test_nonany!(i8, 127i8);
-
 test_nonany!(u8, 0u8);
 test_nonany!(u8, 1u8);
 test_nonany!(u8, 2u8);
