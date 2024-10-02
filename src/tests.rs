@@ -1,4 +1,7 @@
 macro_rules! test_size {
+    (crate::$name:ident, $base:ident) => {
+        const _:() = assert!(core::mem::size_of::<Option<crate::$name>>() == core::mem::size_of::<$base>());
+    };
     ($name:ident, $base:ident) => {
         const _:() = assert!(core::mem::size_of::<Option<$name>>() == core::mem::size_of::<$base>());
     };
@@ -44,6 +47,48 @@ macro_rules! test_nonany {
         };
     };
 }
+
+test_size!(crate::NonZeroI8, i8);
+test_size!(crate::NonZeroI16, i16);
+test_size!(crate::NonZeroI32, i32);
+test_size!(crate::NonZeroI64, i64);
+test_size!(crate::NonZeroI128, i128);
+test_size!(crate::NonZeroIsize, isize);
+
+test_size!(crate::NonMinI8, i8);
+test_size!(crate::NonMinI16, i16);
+test_size!(crate::NonMinI32, i32);
+test_size!(crate::NonMinI64, i64);
+test_size!(crate::NonMinI128, i128);
+test_size!(crate::NonMinIsize, isize);
+
+test_size!(crate::NonMaxI8, i8);
+test_size!(crate::NonMaxI16, i16);
+test_size!(crate::NonMaxI32, i32);
+test_size!(crate::NonMaxI64, i64);
+test_size!(crate::NonMaxI128, i128);
+test_size!(crate::NonMaxIsize, isize);
+
+test_size!(crate::NonZeroU8, u8);
+test_size!(crate::NonZeroU16, u16);
+test_size!(crate::NonZeroU32, u32);
+test_size!(crate::NonZeroU64, u64);
+test_size!(crate::NonZeroU128, u128);
+test_size!(crate::NonZeroUsize, usize);
+
+test_size!(crate::NonMinU8, u8);
+test_size!(crate::NonMinU16, u16);
+test_size!(crate::NonMinU32, u32);
+test_size!(crate::NonMinU64, u64);
+test_size!(crate::NonMinU128, u128);
+test_size!(crate::NonMinUsize, usize);
+
+test_size!(crate::NonMaxU8, u8);
+test_size!(crate::NonMaxU16, u16);
+test_size!(crate::NonMaxU32, u32);
+test_size!(crate::NonMaxU64, u64);
+test_size!(crate::NonMaxU128, u128);
+test_size!(crate::NonMaxUsize, usize);
 
 test_nonany!(i8, -128i8);
 test_nonany!(i8, -127i8);
