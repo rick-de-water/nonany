@@ -1,5 +1,12 @@
 [package]
-name = "nonany"
-version = "0.1.0"
+authors = ["Rick de Water"]
+categories = ["no-std", "rust-patterns"]
+description = "Integer types with customizable niche values"
 edition = "2021"
+keywords = ["nonzero", "nonmin", "nonmax", "niche", "option"]
+license = "MIT"
+name = "nonany"
+readme = "README.md"
+repository = "https://github.com/rick-de-water/nonany"
 rust-version = "1.56"
+version = "0.1.0"
