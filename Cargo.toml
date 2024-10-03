@@ -2,9 +2,10 @@
 authors = ["Rick de Water"]
 categories = ["no-std", "rust-patterns"]
 description = "Integer types with customizable niche values"
+documentation = "https://docs.rs/nonany"
 edition = "2021"
 keywords = ["nonzero", "nonmin", "nonmax", "niche", "option"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 name = "nonany"
 readme = "README.md"
 repository = "https://github.com/rick-de-water/nonany"
