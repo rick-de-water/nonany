@@ -1,3 +1,4 @@
 .vs*/
-/target
+target/
+doc/
 Cargo.lock

@@ -25,7 +25,7 @@ assert_eq!(foo.get(), 25, "The value can be loaded");
 ## Provided types
 nonmax defines generic types with user defined niches for all integer types, as well as type aliases common use cases:
 
-|   | `NonAny` | `NonMin` | `NonMax` | `NonZero` |
+|   | `NonAny*` | `NonMin*` | `NonMax*` | `NonZero*` |
 |---|---|---|---|---|
 | `i8` | [`NonAnyI8`](https://docs.rs/nonany/latest/nonany/struct.NonAnyI8.html) | [`NonMinI8`](https://docs.rs/nonany/latest/nonany/type.NonMinI8.html) | [`NonMaxI8`](https://docs.rs/nonany/latest/nonany/type.NonMaxI8.html) | [`NonZeroI8`](https://docs.rs/nonany/latest/nonany/type.NonZeroI8.html) |
 | `i16` | [`NonAnyI16`](https://docs.rs/nonany/latest/nonany/struct.NonAnyI16.html) | [`NonMinI16`](https://docs.rs/nonany/latest/nonany/type.NonMinI16.html) | [`NonMaxI16`](https://docs.rs/nonany/latest/nonany/type.NonMaxI16.html) | [`NonZeroI16`](https://docs.rs/nonany/latest/nonany/type.NonZeroI16.html) |
@@ -42,9 +42,9 @@ nonmax defines generic types with user defined niches for all integer types, as 
 
 
 ## How does it work?
-Internally all `NonAny` types use the `NonZero` types from the standard library. When a value is stored in `NonAny`, the value is stored in the internal `NonZero` as an XOR of the value and the niche. Any value XORed with the niche that isn't the niche itself can never be zero, so this works out perfectly.
+Internally all `NonAny*` types use the `NonZero*` types from the standard library. When a value is stored in `NonAny*`, the value is stored in the internal `NonZero*` as an XOR of the value and the niche. Any value XORed with the niche that isn't the niche itself can never be zero, so this works out perfectly.
 
-The upside of this technique is that it works on stable rust. The downside is that it requires an, albeit cheap, XOR operation to load and store the value. Additionally, unlike the `NonZero` types, transmuting `NonAny` types to their underlying integer types results in a value that was XORed with the niche, instead of the value itself.
+The upside of this technique is that it works on stable rust. The downside is that it requires an, albeit cheap, XOR operation to load and store the value. Additionally, unlike the `NonZero*` types, transmuting `NonAny*` types to their underlying integer types results in a value that was XORed with the niche, instead of the value itself.
 
 ## MSRV
 The MSRV is fixed at currently 1.56.0, and the intention is to keep it there at least until version 1.0 is released.
