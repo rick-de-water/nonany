@@ -1,4 +1,8 @@
 # nonany
+[![crates.io](https://img.shields.io/crates/v/nonany)](https://crates.io/crates/nonany)
+[![docs](https://img.shields.io/docsrs/nonany)](https://docs.rs/nonany)
+[![msrv](https://img.shields.io/crates/msrv/nonany)](https://docs.rs/nonany)
+
 nonany provides integer types with customizable niche values in stable rust. The main benefit of integer types with niches is that it enables the compiler to do memory layout optimization, such that an `Option` of an integer is the same size as the integer itself:
 
 ```rust
