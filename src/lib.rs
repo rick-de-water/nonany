@@ -8,6 +8,7 @@ pub enum CheckedError {
 
 macro_rules! nonany {
     ($name:ident, $nonzero:ident, $int:ty) => {
+        /// An integer that is known not to equal zero.
         #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
         pub struct $name<const NICHE: $int>(core::num::$nonzero);
 
