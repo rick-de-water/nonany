@@ -1,5 +1,5 @@
 # nonany
-nonany provides integer types with customizable niche values in stable rust. The main benefit of integer types with niches is that it enables the compiler to do memory layout optimization, such that an `Option` of the integer is the same size as the integer itself:
+nonany provides integer types with customizable niche values in stable rust. The main benefit of integer types with niches is that it enables the compiler to do memory layout optimization, such that an `Option` of an integer is the same size as the integer itself:
 
 ```rust
 assert_eq!(
@@ -43,7 +43,7 @@ Internally all `NonAny` types use the `NonZero` types from the standard library.
 The upside of this technique is that it works on stable rust. The downside is that it requires an, albeit cheap, XOR operation to load and store the value. Additionally, unlike the `NonZero` types, transmuting `NonAny` types to their underlying integer types results in a value that was XORed with the niche, instead of the value itself.
 
 ## MSRV
-The MSRV is fixed at currently 1.56.0, and the intention is to keep it there at least until version 1.0 is released. A bump in the MSRV
+The MSRV is fixed at currently 1.56.0, and the intention is to keep it there at least until version 1.0 is released.
 
 ## Similar libraries
  - [nonmax](https://github.com/LPGhatguy/nonmax) - Uses the same XOR technique to create types with an `<int>::MAX` niche. The equivalent in nonany would be to either use a niche of `<int>::MAX`, or the `NonMax*` type aliases.
