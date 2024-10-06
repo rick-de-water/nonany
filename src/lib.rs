@@ -18,7 +18,7 @@ macro_rules! nonany {
         /// ```rust
         #[doc = concat!("assert_eq!(core::mem::size_of::<Option<nonany::", stringify!($name), "<0>>>(), core::mem::size_of::<", stringify!($int), ">());")]
         /// ```
-        #[derive(Clone, Copy, Debug, Eq, PartialEq, Hash)]
+        #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
         pub struct $name<const NICHE: $int>(core::num::$nonzero);
 
         impl<const NICHE: $int> $name<NICHE> {
@@ -52,6 +52,54 @@ macro_rules! nonany {
             }
 
             nonany!(@signed, $signed, $name, $nonzero, $int);
+        }
+
+        impl<const NICHE: $int> core::fmt::Debug for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Debug::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::Display for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Display::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::UpperHex for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::UpperHex::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::LowerHex for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::LowerHex::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::Octal for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Octal::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::Binary for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::Binary::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::LowerExp for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::LowerExp::fmt(&self.get(), f)
+            }
+        }
+
+        impl<const NICHE: $int> core::fmt::UpperExp for $name<NICHE> {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                core::fmt::UpperExp::fmt(&self.get(), f)
+            }
         }
     };
 
