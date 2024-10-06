@@ -18,7 +18,7 @@ macro_rules! nonany {
         /// ```rust
         #[doc = concat!("assert_eq!(core::mem::size_of::<Option<nonany::", stringify!($name), "<0>>>(), core::mem::size_of::<", stringify!($int), ">());")]
         /// ```
-        #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
+        #[derive(Clone, Copy, Eq, Hash, PartialEq)]
         pub struct $name<const NICHE: $int>(core::num::$nonzero);
 
         impl<const NICHE: $int> $name<NICHE> {
@@ -52,6 +52,18 @@ macro_rules! nonany {
             }
 
             nonany!(@signed, $signed, $name, $nonzero, $int);
+        }
+
+        impl<const NICHE: $int> core::cmp::PartialOrd for $name<NICHE> {
+            fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl<const NICHE: $int> core::cmp::Ord for $name<NICHE> {
+            fn cmp(&self, other: &Self) -> core::cmp::Ordering {
+                self.get().cmp(&other.get())
+            }
         }
 
         impl<const NICHE: $int> core::fmt::Debug for $name<NICHE> {

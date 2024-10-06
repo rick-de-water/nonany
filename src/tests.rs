@@ -65,6 +65,52 @@ macro_rules! test_nonany {
 
                 let non = NonAny::new(i).unwrap();
 
+                assert!(PartialEq::eq(&non, &non));
+                assert!(!PartialEq::ne(&non, &non));
+
+                assert_eq!(PartialOrd::partial_cmp(&non, &non), Some(core::cmp::Ordering::Equal));
+                assert!(!PartialOrd::lt(&non, &non));
+                assert!(PartialOrd::le(&non, &non));
+                assert!(!PartialOrd::gt(&non, &non));
+                assert!(PartialOrd::ge(&non, &non));
+                
+                assert_eq!(Ord::cmp(&non, &non), core::cmp::Ordering::Equal);
+                assert_eq!(Ord::min(non, non), non);
+                assert_eq!(Ord::max(non, non), non);
+                assert_eq!(Ord::clamp(non, non, non), non);
+
+                if i != $int::MAX && i + 1 != NICHE {
+                    let non_plus_1 = NonAny::new(i + 1).unwrap();
+
+                    assert!(!PartialEq::eq(&non, &non_plus_1));
+                    assert!(!PartialEq::eq(&non_plus_1, &non));
+                    assert!(PartialEq::ne(&non, &non_plus_1));
+                    assert!(PartialEq::ne(&non_plus_1, &non));
+
+                    assert_eq!(PartialOrd::partial_cmp(&non, &non_plus_1), Some(core::cmp::Ordering::Less));
+                    assert_eq!(PartialOrd::partial_cmp(&non_plus_1, &non), Some(core::cmp::Ordering::Greater));
+
+                    assert!(PartialOrd::lt(&non, &non_plus_1));
+                    assert!(!PartialOrd::lt(&non_plus_1, &non));
+                    assert!(PartialOrd::le(&non, &non_plus_1));
+                    assert!(!PartialOrd::le(&non_plus_1, &non));
+                    assert!(!PartialOrd::gt(&non, &non_plus_1));
+                    assert!(PartialOrd::gt(&non_plus_1, &non));
+                    assert!(!PartialOrd::ge(&non, &non_plus_1));
+                    assert!(PartialOrd::ge(&non_plus_1, &non));
+                
+                    assert_eq!(Ord::cmp(&non, &non_plus_1), core::cmp::Ordering::Less);
+                    assert_eq!(Ord::cmp(&non_plus_1, &non), core::cmp::Ordering::Greater);
+                    assert_eq!(Ord::min(non, non_plus_1), non);
+                    assert_eq!(Ord::min(non_plus_1, non), non);
+                    assert_eq!(Ord::max(non, non_plus_1), non_plus_1);
+                    assert_eq!(Ord::max(non_plus_1, non), non_plus_1);
+                    assert_eq!(Ord::clamp(non, non, non_plus_1), non);
+                    assert_eq!(Ord::clamp(non_plus_1, non, non_plus_1), non_plus_1);
+                    assert_eq!(Ord::clamp(non, non_plus_1, non_plus_1), non_plus_1);
+                    assert_eq!(Ord::clamp(non_plus_1, non, non), non);
+                }
+
                 let mut non_buffer = FormatBuffer::default();
                 let mut i_buffer = FormatBuffer::default();
 
