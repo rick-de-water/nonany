@@ -1,4 +1,5 @@
 use core::{fmt::Write, str};
+use impls::impls;
 
 struct FormatBuffer {
     buffer: [u8;4096],
@@ -236,6 +237,41 @@ test_size!(crate::NonMaxU32, u32);
 test_size!(crate::NonMaxU64, u64);
 test_size!(crate::NonMaxU128, u128);
 test_size!(crate::NonMaxUsize, usize);
+
+macro_rules! test_from_int {
+    ($nonany:ident) => {
+        const _: () = assert!(impls!($crate::$nonany: !From<i8> & !From<i16> & !From<i32> & !From<i64> & !From<i128> & !From<isize>));
+        const _: () = assert!(impls!($crate::$nonany: !From<u8> & !From<u16> & !From<u32> & !From<u64> & !From<u128> & !From<usize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<i8> & TryFrom<i16> & TryFrom<i32> & TryFrom<i64> & TryFrom<i128> & TryFrom<isize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<u8> & TryFrom<u16> & TryFrom<u32> & TryFrom<u64> & TryFrom<u128> & TryFrom<usize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<$crate::NonZeroI8> & TryFrom<$crate::NonZeroI16> & TryFrom<$crate::NonZeroI32> & TryFrom<$crate::NonZeroI64> & TryFrom<$crate::NonZeroI128> & TryFrom<$crate::NonZeroIsize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<$crate::NonZeroU8> & TryFrom<$crate::NonZeroU16> & TryFrom<$crate::NonZeroU32> & TryFrom<$crate::NonZeroU64> & TryFrom<$crate::NonZeroU128> & TryFrom<$crate::NonZeroUsize>));
+    };
+}
+
+test_from_int!(NonZeroI8);
+test_from_int!(NonZeroI16);
+test_from_int!(NonZeroI32);
+test_from_int!(NonZeroI64);
+test_from_int!(NonZeroI128);
+test_from_int!(NonZeroIsize);
+
+test_from_int!(NonZeroU8);
+test_from_int!(NonZeroU16);
+test_from_int!(NonZeroU32);
+test_from_int!(NonZeroU64);
+test_from_int!(NonZeroU128);
+test_from_int!(NonZeroUsize);
+
+const _: () = assert!(impls!(crate::NonZeroI8: From<crate::NonZeroI8> & !From<crate::NonMinI8> & !From<crate::NonZeroI16> & !From<crate::NonZeroI32> & !From<crate::NonZeroI64> & !From<crate::NonZeroI128> & !From<crate::NonZeroIsize>));
+const _: () = assert!(impls!(crate::NonZeroI16: From<crate::NonZeroI8> & !From<crate::NonMinI8> & From<crate::NonZeroI16> & !From<crate::NonMinI16> & !From<crate::NonZeroI32> & !From<crate::NonZeroI64> & !From<crate::NonZeroI128> & !From<crate::NonZeroIsize>));
+
+
+
+//const _: () = assert!(impls!(crate::$nonany: !From<crate::NonZeroU8> & !From<crate::NonZeroU16> & !From<crate::NonZeroU32> & !From<crate::NonZeroU64> & !From<crate::NonZeroU128> & !From<crate::NonZeroUsize>));
+//const _: () = assert!(impls!(crate::$nonany: TryFrom<crate::NonZeroI8> & TryFrom<crate::NonZeroI16> & TryFrom<crate::NonZeroI32> & TryFrom<crate::NonZeroI64> & TryFrom<crate::NonZeroI128> & TryFrom<crate::NonZeroIsize>));
+//const _: () = assert!(impls!(crate::$nonany: TryFrom<crate::NonZeroU8> & TryFrom<crate::NonZeroU16> & TryFrom<crate::NonZeroU32> & TryFrom<crate::NonZeroU64> & TryFrom<crate::NonZeroU128> & TryFrom<crate::NonZeroUsize>));
+
 
 test_nonany!(i8, -128i8, test_nonanyi_0);
 test_nonany!(i8, -127i8, test_nonanyi_1);
