@@ -59,12 +59,17 @@ macro_rules! test_nonany {
             const NICHE: $int = $niche;
             type NonAny = crate::$nonany::<{ NICHE }>;
 
+            assert_eq!(NonAny::try_from(256), Err($crate::CheckedError::Overflow));
+            assert_eq!(NonAny::try_from(-256), Err($crate::CheckedError::Overflow));
+
             for i in $int::MIN..=$int::MAX {
                 if i == NICHE {
+                    assert_eq!(NonAny::try_from(i), Err($crate::CheckedError::Niche));
                     continue
                 }
 
                 let non = NonAny::new(i).unwrap();
+                assert_eq!(NonAny::try_from(i).unwrap(), non);
 
                 assert!(PartialEq::eq(&non, &non));
                 assert!(!PartialEq::ne(&non, &non));
@@ -246,6 +251,8 @@ macro_rules! test_from_int {
         const _: () = assert!(impls!($crate::$nonany: TryFrom<u8> & TryFrom<u16> & TryFrom<u32> & TryFrom<u64> & TryFrom<u128> & TryFrom<usize>));
         const _: () = assert!(impls!($crate::$nonany: TryFrom<$crate::NonZeroI8> & TryFrom<$crate::NonZeroI16> & TryFrom<$crate::NonZeroI32> & TryFrom<$crate::NonZeroI64> & TryFrom<$crate::NonZeroI128> & TryFrom<$crate::NonZeroIsize>));
         const _: () = assert!(impls!($crate::$nonany: TryFrom<$crate::NonZeroU8> & TryFrom<$crate::NonZeroU16> & TryFrom<$crate::NonZeroU32> & TryFrom<$crate::NonZeroU64> & TryFrom<$crate::NonZeroU128> & TryFrom<$crate::NonZeroUsize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<core::num::NonZeroI8> & TryFrom<core::num::NonZeroI16> & TryFrom<core::num::NonZeroI32> & TryFrom<core::num::NonZeroI64> & TryFrom<core::num::NonZeroI128> & TryFrom<core::num::NonZeroIsize>));
+        const _: () = assert!(impls!($crate::$nonany: TryFrom<core::num::NonZeroU8> & TryFrom<core::num::NonZeroU16> & TryFrom<core::num::NonZeroU32> & TryFrom<core::num::NonZeroU64> & TryFrom<core::num::NonZeroU128> & TryFrom<core::num::NonZeroUsize>));
     };
 }
 
@@ -262,16 +269,6 @@ test_from_int!(NonZeroU32);
 test_from_int!(NonZeroU64);
 test_from_int!(NonZeroU128);
 test_from_int!(NonZeroUsize);
-
-const _: () = assert!(impls!(crate::NonZeroI8: From<crate::NonZeroI8> & !From<crate::NonMinI8> & !From<crate::NonZeroI16> & !From<crate::NonZeroI32> & !From<crate::NonZeroI64> & !From<crate::NonZeroI128> & !From<crate::NonZeroIsize>));
-const _: () = assert!(impls!(crate::NonZeroI16: From<crate::NonZeroI8> & !From<crate::NonMinI8> & From<crate::NonZeroI16> & !From<crate::NonMinI16> & !From<crate::NonZeroI32> & !From<crate::NonZeroI64> & !From<crate::NonZeroI128> & !From<crate::NonZeroIsize>));
-
-
-
-//const _: () = assert!(impls!(crate::$nonany: !From<crate::NonZeroU8> & !From<crate::NonZeroU16> & !From<crate::NonZeroU32> & !From<crate::NonZeroU64> & !From<crate::NonZeroU128> & !From<crate::NonZeroUsize>));
-//const _: () = assert!(impls!(crate::$nonany: TryFrom<crate::NonZeroI8> & TryFrom<crate::NonZeroI16> & TryFrom<crate::NonZeroI32> & TryFrom<crate::NonZeroI64> & TryFrom<crate::NonZeroI128> & TryFrom<crate::NonZeroIsize>));
-//const _: () = assert!(impls!(crate::$nonany: TryFrom<crate::NonZeroU8> & TryFrom<crate::NonZeroU16> & TryFrom<crate::NonZeroU32> & TryFrom<crate::NonZeroU64> & TryFrom<crate::NonZeroU128> & TryFrom<crate::NonZeroUsize>));
-
 
 test_nonany!(i8, -128i8, test_nonanyi_0);
 test_nonany!(i8, -127i8, test_nonanyi_1);

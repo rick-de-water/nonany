@@ -265,6 +265,51 @@ nonany_tryfrom_nonany!(NonAnyU64, u64);
 nonany_tryfrom_nonany!(NonAnyU128, u128);
 nonany_tryfrom_nonany!(NonAnyUsize, usize);
 
+macro_rules! nonany_tryfrom_nonzero {
+    ($to_nonany:tt, $to_int:tt) => {
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroI8, i8);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroI16, i16);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroI32, i32);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroI64, i64);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroI128, i128);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroIsize, isize);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroU8, u8);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroU16, u16);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroU32, u32);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroU64, u64);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroU128, u128);
+        nonany_tryfrom_nonzero!($to_nonany, $to_int, NonZeroUsize, usize);
+    };
+
+    ($to_nonany:ident, $to_int:ty, $from_nonzero:ident, $from_int:ty) => {
+        impl<const NICHE: $to_int> core::convert::TryFrom<core::num::$from_nonzero> for $crate::$to_nonany<NICHE> {
+            type Error = $crate::CheckedError;    
+            fn try_from(value: core::num::$from_nonzero) -> Result<Self, Self::Error> {
+                match core::convert::TryInto::<$to_int>::try_into(value.get()) {
+                    Ok(value) => match Self::new(value) {
+                        Some(value) => Ok(value),
+                        None => Err(CheckedError::Niche)
+                    },
+                    Err(_) => Err(CheckedError::Overflow)
+                }
+            }
+        }
+    };
+}
+
+nonany_tryfrom_nonzero!(NonAnyI8, i8);
+nonany_tryfrom_nonzero!(NonAnyI16, i16);
+nonany_tryfrom_nonzero!(NonAnyI32, i32);
+nonany_tryfrom_nonzero!(NonAnyI64, i64);
+nonany_tryfrom_nonzero!(NonAnyI128, i128);
+nonany_tryfrom_nonzero!(NonAnyIsize, isize);
+
+nonany_tryfrom_nonzero!(NonAnyU8, u8);
+nonany_tryfrom_nonzero!(NonAnyU16, u16);
+nonany_tryfrom_nonzero!(NonAnyU32, u32);
+nonany_tryfrom_nonzero!(NonAnyU64, u64);
+nonany_tryfrom_nonzero!(NonAnyU128, u128);
+nonany_tryfrom_nonzero!(NonAnyUsize, usize);
 
 macro_rules! nonany_typedef {
     ($nonzero:ident, $nonmin:ident, $nonmax:ident, $nonany:ident, $int:ident) => {
