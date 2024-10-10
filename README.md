@@ -47,7 +47,7 @@ Internally all `NonAny*` types use the `NonZero*` types from the standard librar
 The upside of this technique is that it works on stable rust. The downside is that it requires an, albeit cheap, XOR operation to load and store the value. Additionally, unlike the `NonZero*` types, transmuting `NonAny*` types to their underlying integer types results in a value that was XORed with the niche, instead of the value itself.
 
 ## MSRV
-The MSRV is fixed at currently 1.56.0, and the intention is to keep it there at least until version 1.0 is released.
+The MSRV is currently fixed at 1.56.0, and the intention is to keep it there at least until version 1.0 is released.
 
 ## Similar libraries
  - [nonmax](https://github.com/LPGhatguy/nonmax) - Uses the same XOR technique to create types with an `<int>::MAX` niche. The equivalent in nonany would be to either use a niche of `<int>::MAX`, or the `NonMax*` type aliases.
