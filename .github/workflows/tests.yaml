@@ -1,0 +1,17 @@
+on: [push]
+
+name: Build and Test
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Fetch
+        run: cargo fetch
+      - name: Build
+        run: cargo build
+      - name: Test
+        run: cargo test
