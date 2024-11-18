@@ -19,6 +19,7 @@ macro_rules! nonany {
         #[doc = concat!("assert_eq!(core::mem::size_of::<Option<nonany::", stringify!($name), "<0>>>(), core::mem::size_of::<", stringify!($int), ">());")]
         /// ```
         #[derive(Clone, Copy, Eq, Hash, PartialEq)]
+        #[repr(transparent)]
         pub struct $name<const NICHE: $int>(core::num::$nonzero);
 
         impl<const NICHE: $int> $name<NICHE> {
